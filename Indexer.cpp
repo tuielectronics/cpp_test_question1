@@ -16,12 +16,12 @@ void initIndexes()
 	insertIndex = 0;
 	maxIndex = 1024;
 	fileIndex = new FileDef*[1024];
-	memset(fileIndex, 0, maxIndex);
+	memset(fileIndex, 0, maxIndex);	//object memset size error
 }
 
 void processDirectory(const char* name)
 {
-	static bool init = true;
+	static bool init = true;	// variable init should be outside the function
 	if (init) {
 		init = false;
 		initIndexes();
@@ -39,9 +39,9 @@ void processDirectory(const char* name)
 			f->size = fd.size;
 
 			char fname[256];
-			strcpy(fname, name);
-			strcat(fname,"\\");
-			strcat(fname,fd.name);
+			strcpy(fname, name);	//might over range
+			strcat(fname,"\\");	//might over range
+			strcat(fname,fd.name);	//might over range
 			_splitpath( fname, f->drive, f->path, f->name, f->ext );
 			if ( strcmp(f->ext, ".txt") == 0) {
 				f->type = txt;
@@ -71,7 +71,7 @@ void processDirectory(const char* name)
 int* getFirstFile(FileType type, FileDef* fd)
 {
 	int tmp = 0;
-	while ( fileIndex[ tmp ] != 0 && fileIndex[ tmp ]->type != type) ++tmp;
+	while ( fileIndex[ tmp ] != 0 && fileIndex[ tmp ]->type != type) ++tmp;	//no maxIndex check
 	int* result = new int;
 	if ( (*result = ( fileIndex [ tmp ] == 0) ? -1 : tmp + 1) == -1)
 		return result;
@@ -83,7 +83,7 @@ int* getFirstFile(FileType type, FileDef* fd)
 int getNextFile(int* handle, FileDef* fd) 
 {
 	int tmp = *handle;
-	while ( fileIndex[ tmp ] != 0 && fileIndex[ tmp ]->type != fd->type) ++tmp;
+	while ( fileIndex[ tmp ] != 0 && fileIndex[ tmp ]->type != fd->type) ++tmp; //no maxIndex check
 	if (fileIndex[ tmp ] != 0) {
 		*fd = *fileIndex[ tmp ];
 		*handle = tmp + 1;

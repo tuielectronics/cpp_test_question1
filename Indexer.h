@@ -12,7 +12,7 @@ enum FileType {
 			};
 
 struct FileDef {
-	char		drive[3];
+	char		drive[3];	// struct size alignment error
 	char		name[256];
 	char		path[256];
 	char		ext[4];
